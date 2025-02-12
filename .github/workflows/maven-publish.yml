@@ -28,8 +28,6 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file ${{ github.workspace }}/KLVulkan/pom.xml
-    - name: Test3
-      run: ls -l "${{ github.workspace }}/KLVulkan/KLVulkan/"
     - name: Test
       run: ls -l "${{ github.workspace }}/KLVulkan/"
     - name: Test2
