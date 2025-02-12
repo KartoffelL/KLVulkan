@@ -32,6 +32,8 @@ jobs:
       run: ls -l "${{ github.workspace }}/KLVulkan/"
     - name: Test2
       run: ls -l "${{ github.workspace }}/"
+    - name: Teee
+      run: cat "${{ github.workspace }}/KLVulkan/settings.xml"
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s "${{ github.workspace }}/KLVulkan/settings.xml"
       env:
