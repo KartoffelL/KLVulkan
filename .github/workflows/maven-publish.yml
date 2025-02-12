@@ -35,6 +35,6 @@ jobs:
     - name: Teee
       run: cat "${{ github.workspace }}/KLVulkan/settings.xml"
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s "${{ github.workspace }}/KLVulkan/settings.xml" --file "${{ github.workspace }}/KLVulkan/pom.xml"
+      run: mvn -B deploy -s "${{ github.workspace }}/KLVulkan/settings.xml" --file "${{ github.workspace }}/KLVulkan/pom.xml"
       env:
         GITHUB_TOKEN: ${{ github.token }}
