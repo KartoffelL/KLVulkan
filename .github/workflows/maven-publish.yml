@@ -27,7 +27,7 @@ jobs:
         settings-path: ${{ github.workspace }}/KLVulkan # location for the settings.xml file
 
     - name: Build with Maven
-      run: mvn -B package --file ${{ github.workspace }}/KLVulkan/pom.xml
+      run: mvn -B package --file "${{ github.workspace }}/KLVulkan/pom.xml"
     - name: Test
       run: ls -l "${{ github.workspace }}/KLVulkan/"
     - name: Test2
@@ -35,6 +35,6 @@ jobs:
     - name: Teee
       run: cat "${{ github.workspace }}/KLVulkan/settings.xml"
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s "${{ github.workspace }}/KLVulkan/settings.xml"
+      run: mvn deploy -s "${{ github.workspace }}/KLVulkan/settings.xml" --file "${{ github.workspace }}/KLVulkan/pom.xml"
       env:
         GITHUB_TOKEN: ${{ github.token }}
