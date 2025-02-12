@@ -30,6 +30,6 @@ jobs:
       run: mvn -B package --file ${{ github.workspace }}/KLVulkan/pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
-      run: mvn -X -f "KLVulkan/pom.xml" --batch-mode deploy
+      run: mvn -s deploy $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
