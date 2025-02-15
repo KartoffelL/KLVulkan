@@ -33,4 +33,6 @@ drawer2 = g.createDrawer();
 ```
 (usage/name be subject to change)
 
+Check out the [wiki](https://github.com/KartoffelL/KLVulkan/wiki) for more info
+
 
