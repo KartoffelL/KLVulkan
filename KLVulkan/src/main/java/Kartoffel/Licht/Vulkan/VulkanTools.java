@@ -12,6 +12,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.util.vma.Vma;
 import org.lwjgl.vulkan.KHRSurface;
 import org.lwjgl.vulkan.KHRSwapchain;
 import org.lwjgl.vulkan.VK13;
@@ -1017,9 +1018,9 @@ public class VulkanTools {
 			info_uniforms.pSetLayouts(stack.longs(dsls));
 			VkPushConstantRange.Buffer buff = null;
 			if (constants != null){
-				buff = new VkPushConstantRange.Buffer(stack.calloc(VkPushConstantRange.SIZE*constants.length));
+				buff = new VkPushConstantRange.Buffer(stack.calloc(VkPushConstantRange.SIZEOF*constants.length));
 				for(int i = 0; i < constants.length; i++) {
-					VkPushConstantRange r = new VkPushConstantRange(stack.calloc(VkPushConstantRange.SIZE));
+					VkPushConstantRange r = new VkPushConstantRange(stack.calloc(VkPushConstantRange.SIZEOF));
 					r.set(constants[i].stageFlags(), constants[i].offset(), constants[i].size());
 					buff.put(i, r);
 				}
@@ -1383,54 +1384,77 @@ public class VulkanTools {
 			VK13.vkFreeCommandBuffers(device, commandPool, commandbuffer);
 		}
 	}
-	/**
-	 * Fills the Buffer with the given Data
-	 * @param buffer the buffer
-	 * @param data the data
-	 * @param srcOff the source offset
-	 * @param dstOff the destination offset
-	 * @param length the length
-	 */
-	public static void fillBuffer(Buffer buffer, ByteBuffer data, int srcOff, int dstOff, int length) {
-		PointerBuffer pb = fillBuffer_getPointerBuffer(buffer.device(), buffer.memory());
-		pb.getByteBuffer(0, (int) buffer.memory().getMemorySize()).put(dstOff, data, srcOff, length);
-		fillBuffer_free(buffer, pb);
-	}
+//	/** //look into VulkanBufferUtils and Allocator!
+//	 * Fills the Buffer with the given Data
+//	 * @param buffer the buffer
+//	 * @param data the data
+//	 * @param srcOff the source offset
+//	 * @param dstOff the destination offset
+//	 * @param length the length
+//	 */
+//	public static void fillBuffer(Buffer buffer, ByteBuffer data, int srcOff, int dstOff, int length) {
+//		PointerBuffer pb = fillBuffer_getPointerBuffer(buffer.device(), buffer.memory());
+//		pb.getByteBuffer(0, (int) buffer.memory().getMemorySize()).put(dstOff, data, srcOff, length);
+//		fillBuffer_free(buffer, pb);
+//	}
 	
-	/**
-	 * Helper function unmapping some memory and freeing the PointerBuffer.
-	 * @param buffer -
-	 * @param pb -
-	 */
-	private static void fillBuffer_free(Buffer buffer, PointerBuffer pb) {
-		VK13.vkUnmapMemory(buffer.device(), buffer.memory().getMemoryAddress());
-		MemoryUtil.memFree(pb);
-	}
+//	/**
+//	 * Helper function unmapping some memory and freeing the PointerBuffer.
+//	 * @param buffer -
+//	 * @param pb -
+//	 */
+//	private static void fillBuffer_free(Buffer buffer, PointerBuffer pb) {
+//		VK13.vkUnmapMemory(buffer.device(), buffer.memory().getMemoryAddress());
+//		MemoryUtil.memFree(pb);
+//	}
+//	
+//	/**
+//	 * Helper function mapping some memory and returning a PointerBuffer containing the address.
+//	 * @param device -
+//	 * @param memory -
+//	 */
+//	private static PointerBuffer fillBuffer_getPointerBuffer(VkDevice device, Memory memory) {
+//		PointerBuffer pb = MemoryUtil.memAllocPointer(1);
+//		VK13.vkMapMemory(device, memory.getMemoryAddress(), memory.getMemoryOffset(), memory.getMemorySize(), 0, pb);
+//		return pb;
+//	}
+//	/** 
+//	 * Maps some memory to a {@link ByteBuffer}
+//	 * @param device the device
+//	 * @param memory the memory
+//	 * @param offset the offset
+//	 * @param size if negative the whole memory will be mapped
+//	 * @return a ByteBuffer viewing the mapped data
+//	 */
+//	public static ByteBuffer mapMemory(VkDevice device, Memory memory, long offset, long size) {
+//		PointerBuffer pb = MemoryUtil.memAllocPointer(1);
+//		VK13.vkMapMemory(device, memory.getMemoryAddress(), memory.getMemoryOffset()+offset, size < 0 ? memory.getMemorySize() : size, 0, pb);
+//		ByteBuffer bb = pb.getByteBuffer(0, (int) memory.getMemorySize());
+//		MemoryUtil.memFree(pb);
+//		return bb;
+//	}
+//	/**
+//	 * Unmaps some memory. The ByteBuffer created using {@link #unmapMemory(VkDevice, Memory)} will be invalidated
+//	 * @param device -
+//	 * @param memory -
+//	 */
+//	public static void unmapMemory(VkDevice device, Memory memory) {
+//		VK13.vkUnmapMemory(device, memory.getMemoryAddress());
+//	}
 	
-	/**
-	 * Helper function mapping some memory and returning a PointerBuffer containing the address.
-	 * @param device -
-	 * @param memory -
-	 */
-	private static PointerBuffer fillBuffer_getPointerBuffer(VkDevice device, Memory memory) {
-		PointerBuffer pb = MemoryUtil.memAllocPointer(1);
-		VK13.vkMapMemory(device, memory.getMemoryAddress(), memory.getMemoryOffset(), memory.getMemorySize(), 0, pb);
-		return pb;
-	}
-	
-	/**
-	 * Returns a ByteBuffer containing the {@link Buffer}s data. The returned Buffer is created via {@link ByteBuffer#allocateDirect(int)}
-	 * @param buffer the src buffer
-	 * @return the created buffer.
-	 */
-	public static ByteBuffer getBuffer(Buffer buffer) {
-		PointerBuffer pb = fillBuffer_getPointerBuffer(buffer.device(), buffer.memory());
-		ByteBuffer b = pb.getByteBuffer(0, (int) buffer.memory().getMemorySize());
-		MemoryUtil.memFree(pb);
-		ByteBuffer res = ByteBuffer.allocateDirect(b.capacity());
-		res.put(b);
-		return res;
-	}
+//	/**
+//	 * Returns a ByteBuffer containing the {@link Buffer}s data. The returned Buffer is created via {@link ByteBuffer#allocateDirect(int)}
+//	 * @param buffer the src buffer
+//	 * @return the created buffer.
+//	 */
+//	public static ByteBuffer getBuffer(Buffer buffer) {
+//		PointerBuffer pb = fillBuffer_getPointerBuffer(buffer.device(), buffer.memory());
+//		ByteBuffer b = pb.getByteBuffer(0, (int) buffer.memory().getMemorySize());
+//		MemoryUtil.memFree(pb);
+//		ByteBuffer res = ByteBuffer.allocateDirect(b.capacity());
+//		res.put(b);
+//		return res;
+//	}
 	/**
 	 *  {@return the instance extensions}
 	 */
@@ -1524,22 +1548,6 @@ public class VulkanTools {
 		KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR(mainGPU, windowSurface, sss);
 		return sss;
 	}
-	
-	/**
-	 * Maps some memory to a {@link ByteBuffer}
-	 * @param device the device
-	 * @param memory the memory
-	 * @param offset the offset
-	 * @param size if negative the whole memory will be mapped
-	 * @return a ByteBuffer viewing the mapped data
-	 */
-	public static ByteBuffer mapMemory(VkDevice device, Memory memory, long offset, long size) {
-		PointerBuffer pb = MemoryUtil.memAllocPointer(1);
-		VK13.vkMapMemory(device, memory.getMemoryAddress(), memory.getMemoryOffset()+offset, size < 0 ? memory.getMemorySize() : size, 0, pb);
-		ByteBuffer bb = pb.getByteBuffer(0, (int) memory.getMemorySize());
-		MemoryUtil.memFree(pb);
-		return bb;
-	}
 	/**
 	 * Requests a Validation Layer by name.
 	 * @param validationLayerNames -
@@ -1600,15 +1608,6 @@ public class VulkanTools {
 			
 			endSingleUseCommandBufferAndSubmit(device, commandPool, commandbuffer, queue);
 		}
-	}
-
-	/**
-	 * Unmaps some memory. The ByteBuffer created using {@link #unmapMemory(VkDevice, Memory)} will be invalidated
-	 * @param device -
-	 * @param memory -
-	 */
-	public static void unmapMemory(VkDevice device, Memory memory) {
-		VK13.vkUnmapMemory(device, memory.getMemoryAddress());
 	}
 	
 }

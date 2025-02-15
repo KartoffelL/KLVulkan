@@ -1,5 +1,7 @@
 package Kartoffel.Licht.Vulkan;
 
+import java.nio.ByteBuffer;
+
 import org.lwjgl.vulkan.VkDevice;
 
 /**
@@ -23,6 +25,10 @@ public interface Allocator extends VulkanFreeable{
 		 * {@return the size of the allocated memory.}
 		 */
 		public long getMemorySize();
+		/**
+		 * {@return the allocator of the memory.}
+		 */
+		public Allocator getAllocator();
 	}
 	/**
 	 * Provides information about the memory requirements, etc..<br>
@@ -42,6 +48,35 @@ public interface Allocator extends VulkanFreeable{
 	 * @param memory the memory to free.
 	 */
 	public void freeMemory(Memory memory);
+	/**
+	 * Maps the memory to a {@link ByteBuffer}.
+	 * @param memory -
+	 * @return -
+	 */
+	public ByteBuffer mapMemory(Memory memory);
+	/**
+	 * Unmaps and flushes the memory. The ByteBuffer mapping will be invalidated!
+	 * @param memory -
+	 */
+	public void unmapMemory(Memory memory);
+	/**
+	 * Copies some memory into an ByteBuffer.
+	 * @param dst the destination
+	 * @param dstOffset the destination offset
+	 * @param src the source
+	 * @param srcOffset the source offset
+	 * @param length the length
+	 */
+	public void copyMemory(Memory dst, long dstOffset, ByteBuffer src, long srcOffset, long length);
+	/**
+	 * Copies data from the ByteBuffer into memory.
+	 * @param dst the destination
+	 * @param dstOffset the destination offset
+	 * @param src the source
+	 * @param srcOffset the source offset
+	 * @param length the length
+	 */
+	public void copyMemory(ByteBuffer dst, long dstOffset, Memory src, long srcOffset, long length);
 	/**
 	 * {@return the Device this allocator allocates on.}
 	 */

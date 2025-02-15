@@ -90,6 +90,17 @@ public class VulkanBufferUtils {
 	public Buffer generateUniformBuffer(int capacity, boolean isStorageBuffer) {
 		return VulkanTools.createBuffer(allocator, capacity, VK13.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK13.VK_BUFFER_USAGE_TRANSFER_DST_BIT  | (isStorageBuffer ? VK13.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT  : 0), VK13.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT  | VK13.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK13.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0);
 	}
+	/**
+	 * Fills the buffer with data
+	 * @param buffer the destination
+	 * @param data the source
+	 * @param srcOff the source offset
+	 * @param dstOff the destination offset
+	 * @param length the length
+	 */
+	public void fillBuffer(Buffer buffer, ByteBuffer data, int srcOff, int dstOff, int length) {
+		buffer.memory().getAllocator().copyMemory(buffer.memory(), dstOff, data, srcOff, length);
+	}
 	
 	/**
 	 * Puts the specified data into the Buffer by first copying it to a temporal Buffer, then from the temporal buffer to the destination Buffer.
@@ -117,7 +128,7 @@ public class VulkanBufferUtils {
 		if(mainQueue == null)
 			throw new IllegalStateException("VulkanBufferUtils not initialized with commandpool and Queue! This is required for indirect Buffer operations since transferring data from the src buffer to an accesable Buffer and vice-versa is done via commands!");
 		Buffer tempBuff = VulkanTools.createBuffer(allocator, length, VK13.VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK13.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK13.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0);
-		VulkanTools.fillBuffer(tempBuff, data, srcOff, 0, length);
+		fillBuffer(tempBuff, data, srcOff, 0, length);
 		VulkanTools.copyBuffer(tempBuff, (Buffer) buffer, 0, dstOff, length, commandPool, mainQueue);
 		tempBuff.free();
 	}
@@ -214,7 +225,7 @@ public class VulkanBufferUtils {
 	 * @param length amount of data to copy. (not byte size!)
 	 */
 	public void putBufferDirect(Buffer buffer, ByteBuffer data, int srcOff, int dstOff, int length) {
-		VulkanTools.fillBuffer(buffer, data, srcOff, dstOff, length);
+		fillBuffer(buffer, data, srcOff, dstOff, length);
 	}
 	/**
 	 * Puts the specified data into the Buffer without usage of a temporal Buffer.

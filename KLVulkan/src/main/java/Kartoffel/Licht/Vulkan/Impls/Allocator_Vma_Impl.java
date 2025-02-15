@@ -1,7 +1,10 @@
 package Kartoffel.Licht.Vulkan.Impls;
 
+import java.nio.ByteBuffer;
+
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.vma.Vma;
 import org.lwjgl.util.vma.VmaAllocationCreateInfo;
 import org.lwjgl.util.vma.VmaAllocationInfo;
@@ -22,18 +25,21 @@ public class Allocator_Vma_Impl implements Allocator{
 	 */
 	public static class MemoryImpl implements Memory {
 		private long address, offset, object, size;
+		private Allocator allocator;
 		/**
 		 * Implementation of {@link Memory} from {@link Allocator_Vma_Impl}
+		 * @param allocator the allocator
 		 * @param address the address
 		 * @param offset the offset
 		 * @param object the object
 		 * @param size the size
 		 */
-		public MemoryImpl(long address, long offset, long object, long size) {
+		public MemoryImpl(Allocator allocator, long address, long offset, long object, long size) {
 			this.address  = address;
 			this.offset = offset;
 			this.object = object;
 			this.size = size;
+			this.allocator = allocator;
 		}
 		
 		@Override
@@ -48,6 +54,11 @@ public class Allocator_Vma_Impl implements Allocator{
 		@Override
 		public long getMemorySize() {
 			return size;
+		}
+
+		@Override
+		public Allocator getAllocator() {
+			return allocator;
 		}
 		
 	}
@@ -110,13 +121,12 @@ public class Allocator_Vma_Impl implements Allocator{
 			cinf.usage(inf.memoryUsage);
 			cinf.requiredFlags(inf.memorySuitableFlags);
 			cinf.preferredFlags(inf.memoryPreferredFlags);
-			
 			VmaAllocationInfo info_ = new VmaAllocationInfo(stack.calloc(56));
 			PointerBuffer pb = stack.callocPointer(1);
 			int res = Vma.vmaAllocateMemory(allocator, inf.requirements, cinf, pb, info_);
 			if(res != 0)
 				throw new RuntimeException("Failed to allocate memory! " + res);
-			return new MemoryImpl(info_.deviceMemory(), info_.offset(), pb.get(0), inf.requirements.size());
+			return new MemoryImpl(this, info_.deviceMemory(), info_.offset(), pb.get(0), inf.requirements.size());
 		}
 	}
 	@Override
@@ -132,6 +142,34 @@ public class Allocator_Vma_Impl implements Allocator{
 	@Override
 	public VkDevice getDevice() {
 		return device;
+	}
+
+	@Override
+	public ByteBuffer mapMemory(Memory memory) {
+		PointerBuffer pp = MemoryUtil.memAllocPointer(1);
+		Vma.vmaMapMemory(allocator, ((MemoryImpl)memory).object, pp);
+		ByteBuffer res = pp.getByteBuffer((int) memory.getMemorySize());
+		MemoryUtil.memFree(pp);
+		return res;
+	}
+
+	@Override
+	public void unmapMemory(Memory memory) {
+		Vma.vmaUnmapMemory(allocator, ((MemoryImpl)memory).object);
+	}
+
+	@Override
+	public void copyMemory(Memory dst, long dstOffset, ByteBuffer src, long srcOffset, long length) {
+		long address = MemoryUtil.memAddress(src)+srcOffset; //Create adjusted view
+		ByteBuffer srcc = MemoryUtil.memByteBuffer(address, (int) length);
+		Vma.vmaCopyMemoryToAllocation(allocator, srcc, ((MemoryImpl)dst).object, dstOffset);
+	}
+
+	@Override
+	public void copyMemory(ByteBuffer dst, long dstOffset, Memory src, long srcOffset, long length) {
+		long address = MemoryUtil.memAddress(dst)+dstOffset; //Create adjusted view
+		ByteBuffer dstt = MemoryUtil.memByteBuffer(address, (int) length);
+		Vma.vmaCopyAllocationToMemory(allocator, ((MemoryImpl)src).object, srcOffset, dstt);
 	}
 
 }
