@@ -127,21 +127,23 @@ public class GraphicsPipeline implements Pipeline, VulkanFreeable{
 			this.attribDescriptors = attribDescriptors;
 		}
 		/**
-		 * Creates a new {@link GraphicsPipelineInfo}. The vertexDescriptors is inferred of the attribDescriptors.
+		 * Creates a new {@link GraphicsPipelineInfo}.
 		 * @param topology the topology
 		 * @param dynamicStates an array of dymanic States
 		 * @param viewports an array of viewports
 		 * @param scissors an array of scissors
 		 * @param attribDescriptors an array of {@link VertexAttribDescriptor}s
+		 * @param elementSize the size of an element
 		 * @see <a href="https://docs.vulkan.org/spec/latest/chapters/pipelines.html#pipelines-graphics">Pipelines :: Vulkan Documentation Project</a>
 		 */
-		public GraphicsPipelineInfo(int topology, int[] dynamicStates, Viewport[] viewports, Scissor[] scissors, VertexAttribDescriptor[] attribDescriptors) {
+		public GraphicsPipelineInfo(int topology, int[] dynamicStates, Viewport[] viewports, Scissor[] scissors, VertexAttribDescriptor[] attribDescriptors, int elementSize) {
 			super();
 			this.inputAssembly_topology = topology;
 			this.dynamicStates = dynamicStates;
 			this.viewports = viewports;
 			this.scissors = scissors;
 			this.attribDescriptors = attribDescriptors;
+			this.vertexDescriptors = new VertexDescriptor[] {new VertexDescriptor(0, elementSize, false)};
 		}
 		/**
 		 * Setter

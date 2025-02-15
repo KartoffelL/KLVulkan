@@ -215,7 +215,7 @@ public class VulkanInstance implements VulkanFreeable{
 	/**
 	 * Creates a new VulkanInstance, which is the way you interact with Vulkan.
 	 * The API-version is the instance-version. Set 'VulkanInstance.VULKAN_API_VERSION_OVERWRITE' to change that behavior.
-	 * You should need only one VulkanInstance for your application.
+	 * You should need only one VulkanInstance for your application. By default GLFWs required instance extensions are included.
 	 * @param engineName the name of the Engine
 	 * @param engineVersionMayor mayor version
 	 * @param engineVersionMinor minor version
@@ -230,7 +230,7 @@ public class VulkanInstance implements VulkanFreeable{
 	public static VulkanInstance create(String engineName, int engineVersionMayor, int engineVersionMinor, int engineVersionPatch, String appName, int appVersionMayor, int appVersionMinor, int appVersionPatch, String...extensions) {
 		int[] res = new int[1];
 		VK13.vkEnumerateInstanceVersion(res);
-		return VulkanTools.createVulkanInstance(appName, engineVersionMayor, engineVersionMinor, engineVersionPatch, engineName, appVersionMayor, appVersionMinor, appVersionPatch, extensions, VULKAN_API_VERSION_OVERWRITE == -1 ? res[0]:VULKAN_API_VERSION_OVERWRITE);
+		return VulkanTools.createVulkanInstance(appName, engineVersionMayor, engineVersionMinor, engineVersionPatch, engineName, appVersionMayor, appVersionMinor, appVersionPatch, extensions, true, VULKAN_API_VERSION_OVERWRITE == -1 ? res[0]:VULKAN_API_VERSION_OVERWRITE);
 	}
 	ValidationLayer[] ValidationLayers;
 	
@@ -290,7 +290,7 @@ public class VulkanInstance implements VulkanFreeable{
 	 * Tries to guess the best Device for heavy Graphics applications like Games, etc..
 	 * @return the index of the Device
 	 */
-	public int guessCard_GAME() {
+	public int guessDevice_GAME() {
 		int res = 0;
 		for(int i = 1; i < graphicsDevices.length; i++) {
 			Device current = graphicsDevices[res];
@@ -304,7 +304,7 @@ public class VulkanInstance implements VulkanFreeable{
 	 * Tries to guess the best Device for things like User-Interfaces, etc..
 	 * @return the index of the Device.
 	 */
-	public int guessCard_GUI() {
+	public int guessDevice_GUI() {
 		int res = 0;
 		for(int i = 1; i < graphicsDevices.length; i++) {
 			Device current = graphicsDevices[res];

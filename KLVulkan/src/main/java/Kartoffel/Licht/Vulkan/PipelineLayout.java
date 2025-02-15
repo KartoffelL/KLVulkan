@@ -10,6 +10,14 @@ import Kartoffel.Licht.Vulkan.VulkanInstance.VirtualDevice;
  */
 public class PipelineLayout implements VulkanFreeable, VulkanObject{
 	
+	/**
+	 * From a shader perspective, push constant are similar to a uniform buffer.
+	 * @param stageFlags the flags concerning the stages
+	 * @param offset the byte offset
+	 * @param size the byte size
+	 * @see <a href="https://docs.vulkan.org/guide/latest/push_constants.html">Push Constants :: Vulkan Documentation Project</a>
+	 */
+	public static record PushConstant(int stageFlags, int offset, int size) {}
 	
 	/**
 	 * Creates a new PipelineLayout

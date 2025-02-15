@@ -8,6 +8,7 @@ import java.util.List;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -68,6 +69,7 @@ import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
+import org.lwjgl.vulkan.VkPushConstantRange;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.lwjgl.vulkan.VkRect2D;
@@ -75,6 +77,7 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkRenderPassCreateInfo;
 import org.lwjgl.vulkan.VkSamplerCreateInfo;
 import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
+import org.lwjgl.vulkan.VkSemaphoreWaitInfo;
 import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import org.lwjgl.vulkan.VkSubpassDependency;
@@ -91,6 +94,7 @@ import Kartoffel.Licht.Vulkan.DescriptorData.ddBuffer;
 import Kartoffel.Licht.Vulkan.DescriptorData.ddImage;
 import Kartoffel.Licht.Vulkan.DescriptorPool.DescriptorSet;
 import Kartoffel.Licht.Vulkan.GraphicsPipeline.GraphicsPipelineInfo;
+import Kartoffel.Licht.Vulkan.PipelineLayout.PushConstant;
 import Kartoffel.Licht.Vulkan.Impls.Allocator_Vma_Impl;
 import Kartoffel.Licht.Vulkan.VulkanInstance.Device;
 import Kartoffel.Licht.Vulkan.VulkanInstance.MemoryProperties;
@@ -712,7 +716,7 @@ public class VulkanTools {
 	 * @param subpass the subpass
 	 * @return the created {@link GraphicsPipeline}
 	 */
-	public static GraphicsPipeline createGraphicsPipeline(ShaderStage[] stages, VirtualDevice device, DescriptorSetLayout[] dlayouts, GraphicsPipelineInfo info, RenderPass renderpass, int subpass) {
+	public static GraphicsPipeline createGraphicsPipeline(ShaderStage[] stages, VirtualDevice device, DescriptorSetLayout[] dlayouts, PushConstant[] constants, GraphicsPipelineInfo info, RenderPass renderpass, int subpass) {
 		long[] arrl = new long[1];
 		try(MemoryStack stack = MemoryStack.stackPush()) {
 			VkVertexInputBindingDescription[] descriptions = new VkVertexInputBindingDescription[info.vertexDescriptors.length];
@@ -721,7 +725,7 @@ public class VulkanTools {
 			VkVertexInputAttributeDescription[] attributes = new VkVertexInputAttributeDescription[info.attribDescriptors.length];
 			for(int i = 0; i < info.attribDescriptors.length; i++)
 				attributes[i] = VulkanTools.getVertexAttrDescr(stack, info.attribDescriptors[i].binding(), info.attribDescriptors[i].attrib(), info.attribDescriptors[i].type(), info.attribDescriptors[i].offsetBytes()); //0, 0, VK13.VK_FORMAT_R32G32B32_SFLOAT, 0
-			PipelineLayout pipelineLayout = VulkanTools.createPipeLineLayout(device, dlayouts);
+			PipelineLayout pipelineLayout = VulkanTools.createPipeLineLayout(device, dlayouts, constants);
 			
 			VkPipelineShaderStageCreateInfo.Buffer stagess = new VkPipelineShaderStageCreateInfo.Buffer(stack.calloc(VkPipelineShaderStageCreateInfo.SIZEOF*stages.length));
 			for(int i = 0; i < stages.length; i++) {
@@ -885,31 +889,40 @@ public class VulkanTools {
 	 * @param allocator -
 	 * @param width -
 	 * @param height -
+	 * @param depth 1 for 2D images
+	 * @param mipLevels -
+	 * @param arrayLayers -
 	 * @param imageFormat -
+	 * @param tiling - eg. VK13.VK_IMAGE_TILING_OPTIMAL
+	 * @param initialLayout - eg. VK13.VK_IMAGE_LAYOUT_UNDEFINED
 	 * @param imageUsage -
+	 * @param sharingMode - normally VK13.VK_SHARING_MODE_EXCLUSIVE
+	 * @param flags - default 0
+	 * @param samples - eg. VK13.VK_SAMPLE_COUNT_1_BIT
 	 * @param memorySuitableFlags -
 	 * @param memoryPreferredFlags -
+	 * 
 	 * @return -
 	 */
-	public static Image createImage(Allocator allocator, int width, int height, int imageFormat, int imageUsage, int memorySuitableFlags, int memoryPreferredFlags) {
+	public static Image createImage(Allocator allocator, int width, int height, int depth, int mipLevels, int arrayLayers, int imageFormat, int tiling, int initialLayout, int imageUsage, int sharingMode, int flags, int samples, int memorySuitableFlags, int memoryPreferredFlags) {
 		long[] arrl = new long[1];
 		VkDevice device = allocator.getDevice();
 		try(MemoryStack stack = MemoryStack.stackPush()) {
 			VkImageCreateInfo info = new VkImageCreateInfo(stack.calloc(88));
 			info.sType(VK13.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
 			info.imageType(VK13.VK_IMAGE_TYPE_2D);
-			info.extent().width(width);
+			info.extent().width(width); 
 			info.extent().height(height);
-			info.extent().depth(1);
-			info.mipLevels(1);
-			info.arrayLayers(1);
+			info.extent().depth(depth); //1
+			info.mipLevels(mipLevels); //1
+			info.arrayLayers(arrayLayers); //1
 			info.format(imageFormat);
-			info.tiling(VK13.VK_IMAGE_TILING_OPTIMAL);
-			info.initialLayout(VK13.VK_IMAGE_LAYOUT_UNDEFINED);
+			info.tiling(tiling); //VK13.VK_IMAGE_TILING_OPTIMAL
+			info.initialLayout(initialLayout); //VK13.VK_IMAGE_LAYOUT_UNDEFINED
 			info.usage(imageUsage);
-			info.sharingMode(VK13.VK_SHARING_MODE_EXCLUSIVE);
-			info.flags(0);
-			info.samples(VK13.VK_SAMPLE_COUNT_1_BIT);
+			info.sharingMode(sharingMode); //VK13.VK_SHARING_MODE_EXCLUSIVE
+			info.flags(flags);
+			info.samples(samples); //VK13.VK_SAMPLE_COUNT_1_BIT
 			check("Failed to create Image!", VK13.vkCreateImage(device, info, null, arrl));
 			long image = arrl[0];
 			VkMemoryRequirements requirements = new VkMemoryRequirements(stack.calloc(24));
@@ -992,7 +1005,7 @@ public class VulkanTools {
 	 * @param descriptorsetlayout -
 	 * @return -
 	 */
-	public static PipelineLayout createPipeLineLayout(VirtualDevice device, DescriptorSetLayout[] descriptorsetlayout) {
+	public static PipelineLayout createPipeLineLayout(VirtualDevice device, DescriptorSetLayout[] descriptorsetlayout, PushConstant[] constants) {
 		long[] arrl = new long[1];
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			VkPipelineLayoutCreateInfo info_uniforms = new VkPipelineLayoutCreateInfo(stack.calloc(48));
@@ -1002,7 +1015,16 @@ public class VulkanTools {
 			for(int i = 0; i < dsls.length; i++)
 				dsls[i] = descriptorsetlayout[i].address;
 			info_uniforms.pSetLayouts(stack.longs(dsls));
-			info_uniforms.pPushConstantRanges(null);
+			VkPushConstantRange.Buffer buff = null;
+			if (constants != null){
+				buff = new VkPushConstantRange.Buffer(stack.calloc(VkPushConstantRange.SIZE*constants.length));
+				for(int i = 0; i < constants.length; i++) {
+					VkPushConstantRange r = new VkPushConstantRange(stack.calloc(VkPushConstantRange.SIZE));
+					r.set(constants[i].stageFlags(), constants[i].offset(), constants[i].size());
+					buff.put(i, r);
+				}
+			}
+			info_uniforms.pPushConstantRanges(buff);
 			check("Failed to create Pipeline Layout!", VK13.vkCreatePipelineLayout(device.device(), info_uniforms, null, arrl));
 			PipelineLayout res = new PipelineLayout(arrl[0], device);
 			return res;
@@ -1099,6 +1121,18 @@ public class VulkanTools {
 		}
 	}
 	/**
+	 * Waits until a semaphore has a specific value.
+	 * @param device -
+	 * @param semaphore -
+	 */
+	public static void waitSemaphore(VkDevice device, long semaphore, long value) {
+		try(MemoryStack stack = MemoryStack.stackPush()) { 
+			VkSemaphoreWaitInfo info = new VkSemaphoreWaitInfo(stack.calloc(VkSemaphoreWaitInfo.SIZEOF));
+			info.set(VK13.VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO, 0, 0, 1, stack.longs(semaphore), stack.longs(value));
+			VK13.vkWaitSemaphores(device, info, Long.MAX_VALUE);
+		}
+	}
+	/**
 	 * Creates a new {@link ShaderModule}
 	 * @param device -
 	 * @param data -
@@ -1167,10 +1201,12 @@ public class VulkanTools {
 	 * @param evmi -
 	 * @param evp -
 	 * @param extensions -
+	 * @param includeGLFWExtensions -
 	 * @param apiVersion -
 	 * @return -
 	 */
-	public static VulkanInstance createVulkanInstance(String appName, int avma, int avmi, int avp, String engineName, int evma, int evmi, int evp, String[] extensions, int apiVersion) {
+	@SuppressWarnings("resource")
+	public static VulkanInstance createVulkanInstance(String appName, int avma, int avmi, int avp, String engineName, int evma, int evmi, int evp, String[] extensions, boolean includeGLFWExtensions, int apiVersion) {
 		int[] arr = new int[1];
 		VkInstance instance;
 		VulkanInstance vulkanInstance = new VulkanInstance();
@@ -1186,19 +1222,26 @@ public class VulkanTools {
 			VkInstanceCreateInfo instance_info = new VkInstanceCreateInfo(stack.calloc(64));
 			instance_info.sType(VK13.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO);
 			instance_info.pApplicationInfo(app_info);
-			PointerBuffer pb = GLFWVulkan.glfwGetRequiredInstanceExtensions(); //Instance extensions
 			int pb_size = 0;
-			if(pb != null) //TODO yank GLFW out of here
-//				DebugPrinter.wrn("Failed to get required instance extensions for GLFW! " + GLFW.glfwGetError(null) + ".");
-//			else
-				pb_size = pb.capacity();
-			PointerBuffer exts = stack.callocPointer(pb_size+extensions.length);
-			for(int i = 0; i < pb_size; i++)
-				exts.put(i, pb.get(i));
+			PointerBuffer exts = null;
+			if(includeGLFWExtensions) {
+				PointerBuffer pb = GLFWVulkan.glfwGetRequiredInstanceExtensions(); //Instance extensions
+				if(pb == null) {
+					exts = stack.callocPointer(1);
+					GLFW.glfwGetError(exts);
+					throw new IllegalStateException("Failed to get required Instance Extensions for GLFW! " + exts.getStringASCII());
+				}
+				else
+					pb_size = pb.capacity();
+				exts = stack.callocPointer(pb_size+extensions.length);
+				for(int i = 0; i < pb_size; i++)
+					exts.put(i, pb.get(i));
+			} else {
+				exts = stack.callocPointer(extensions.length);
+			}
 			for(int i = pb_size; i < pb_size+extensions.length; i++)
 				exts.put(i, stack.ASCII(extensions[i-pb_size]));
 			instance_info.ppEnabledExtensionNames(exts);
-			
 			
 			PointerBuffer b = stack.callocPointer(1);
 			VK13.vkEnumerateInstanceLayerProperties(arr, null);
