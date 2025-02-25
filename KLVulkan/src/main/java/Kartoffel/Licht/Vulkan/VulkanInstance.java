@@ -1,6 +1,8 @@
 package Kartoffel.Licht.Vulkan;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.lwjgl.vulkan.VK10;
 import org.lwjgl.vulkan.VK11;
@@ -179,6 +181,25 @@ public class VulkanInstance implements VulkanFreeable{
 	public static int VULKAN_API_VERSION_OVERWRITE = -1;
 	
 	/**
+	 * A list of all {@link VirtualDevice}s that have been created using {@link #getDevice(Device, int[], String, String)}. They will be destroyed with this instance.
+	 */
+	public final List<VirtualDevice> cachedDevices = new ArrayList<>();
+	
+	/**
+	 * Creates a new {@link VirtualDevice}. This device will be governed by this instance.
+	 * @param device the base device
+	 * @param queueFamilyIndex the index of the queueFamily
+	 * @param features the features
+	 * @param Extensions any extensions
+	 * @return the created VirtualDevice.
+	 */
+	public VirtualDevice getDevice(Device device, int[] queueFamilyIndex, String features, String...Extensions) {
+		var d = VulkanTools.createDevice(device, queueFamilyIndex, features, Extensions);
+		cachedDevices.add(d);
+		return d;
+	}
+	
+	/**
 	 * Higher means presumably better performance
 	 * @param d the device
 	 * @return the score, higher means better suited
@@ -245,6 +266,8 @@ public class VulkanInstance implements VulkanFreeable{
 	 * Frees any resources held back by this VulkanInstance
 	 */
 	public void free() {
+		for(VirtualDevice d : cachedDevices)
+			VK13.vkDestroyDevice(d.device(), null);
 		for(Device d : graphicsDevices)
 			d.free();
 		VK13.vkDestroyInstance(instance, null);

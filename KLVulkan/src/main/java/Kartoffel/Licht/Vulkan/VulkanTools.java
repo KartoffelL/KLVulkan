@@ -12,7 +12,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVulkan;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.util.vma.Vma;
 import org.lwjgl.vulkan.KHRSurface;
 import org.lwjgl.vulkan.KHRSwapchain;
 import org.lwjgl.vulkan.VK13;
@@ -90,18 +89,17 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
-import Kartoffel.Licht.Vulkan.Allocator.Memory;
 import Kartoffel.Licht.Vulkan.DescriptorData.ddBuffer;
 import Kartoffel.Licht.Vulkan.DescriptorData.ddImage;
 import Kartoffel.Licht.Vulkan.DescriptorPool.DescriptorSet;
 import Kartoffel.Licht.Vulkan.GraphicsPipeline.GraphicsPipelineInfo;
 import Kartoffel.Licht.Vulkan.PipelineLayout.PushConstant;
-import Kartoffel.Licht.Vulkan.Impls.Allocator_Vma_Impl;
 import Kartoffel.Licht.Vulkan.VulkanInstance.Device;
 import Kartoffel.Licht.Vulkan.VulkanInstance.MemoryProperties;
 import Kartoffel.Licht.Vulkan.VulkanInstance.QueueFamily;
 import Kartoffel.Licht.Vulkan.VulkanInstance.ValidationLayer;
 import Kartoffel.Licht.Vulkan.VulkanInstance.VirtualDevice;
+import Kartoffel.Licht.Vulkan.Impls.Allocator_Vma_Impl;
 
 
 /**
@@ -810,7 +808,7 @@ public class VulkanTools {
 			colorBlendAttachment.dstColorBlendFactor(VK13.VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA);
 			colorBlendAttachment.colorBlendOp(VK13.VK_BLEND_OP_ADD);
 			colorBlendAttachment.srcAlphaBlendFactor(VK13.VK_BLEND_FACTOR_ONE);
-			colorBlendAttachment.dstAlphaBlendFactor(VK13.VK_BLEND_FACTOR_ZERO);
+			colorBlendAttachment.dstAlphaBlendFactor(VK13.VK_BLEND_FACTOR_ONE);
 			colorBlendAttachment.alphaBlendOp(VK13.VK_BLEND_OP_ADD);
 			
 			VkPipelineColorBlendAttachmentState.Buffer colorBlendAttachment_buffer = new VkPipelineColorBlendAttachmentState.Buffer(stack.calloc(32*1));

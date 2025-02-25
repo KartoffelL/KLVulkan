@@ -4,6 +4,8 @@ package Kartoffel.Licht.Vulkan;
  */
 public interface VulkanFreeable extends AutoCloseable{
 	
+	
+	
 	@Override
 	default void close() throws Exception {
 		free();
