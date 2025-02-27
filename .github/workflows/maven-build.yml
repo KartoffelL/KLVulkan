@@ -1,6 +1,7 @@
 name: Build and Append to Release
 
 on:
+  workflow_dispatch:
   release:
     types: [created]  # Runs when a new release is published
 
