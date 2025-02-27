@@ -29,6 +29,7 @@ jobs:
 
       - name: Find JAR Files
         run: |
+          ls KLVulkan/target
           mkdir -p release
           find KLVulkan/target -name "*.jar" -exec cp {} release/ \; || echo "No JARs found in KLVulkan"
           find AGGraphics/target -name "*.jar" -exec cp {} release/ \ --module-path KLVulkan/target; || echo "No JARs found in KLVulkan"
