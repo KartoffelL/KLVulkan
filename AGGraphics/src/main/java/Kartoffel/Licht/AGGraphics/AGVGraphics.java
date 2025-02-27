@@ -497,7 +497,7 @@ public class AGVGraphics implements VulkanFreeable{
 	
 	/**
 	 * Initial layout is VK_IMAGE_LAYOUT_UNDEFINED
-	 * @param type the type
+	 * @param type the type, eg. {@link VK13#VK_FORMAT_R8G8B8A8_SRGB}
 	 * @param sizeX the width
 	 * @param sizeY the height
 	 * @return the created {@link AGTexture}
@@ -528,7 +528,7 @@ public class AGVGraphics implements VulkanFreeable{
 //	}
 	/**
 	 * Initial layout is VK_IMAGE_LAYOUT_UNDEFINED
-	 * @param type the type
+	 * @param type the type, eg. {@link VK13#VK_FORMAT_R8G8B8A8_SRGB}
 	 * @param sizeX the width
 	 * @param sizeY the height
 	 * @param usage the usage

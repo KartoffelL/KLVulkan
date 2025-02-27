@@ -81,7 +81,7 @@ public class ImGuiIntegration implements VulkanFreeable{
 		ImInt texWidth = new ImInt();
 		ImInt texHeight = new ImInt();
 		ByteBuffer buf = io.getFonts().getTexDataAsRGBA32(texWidth, texHeight);
-		texture = g.generateTexture2D(VK13.VK_FORMAT_R8G8B8A8_SRGB, texWidth.get(), texHeight.get());
+		texture = g.generateTexture2D(VK13.VK_FORMAT_R8G8B8A8_UNORM, texWidth.get(), texHeight.get());
 		g.transitionTexture(texture, VK13.VK_IMAGE_LAYOUT_GENERAL,
 				VK13.VK_ACCESS_SHADER_READ_BIT, 
 				VK13.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
@@ -121,7 +121,7 @@ public class ImGuiIntegration implements VulkanFreeable{
 		ImInt texHeight = new ImInt();
 		ByteBuffer buf = io.getFonts().getTexDataAsRGBA32(texWidth, texHeight);
 		texture.free();
-		texture = g.generateTexture2D(VK13.VK_FORMAT_R8G8B8A8_SRGB, texWidth.get(), texHeight.get());
+		texture = g.generateTexture2D(VK13.VK_FORMAT_R8G8B8A8_UNORM, texWidth.get(), texHeight.get());
 		g.transitionTexture(texture, VK13.VK_IMAGE_LAYOUT_GENERAL,
 				VK13.VK_ACCESS_SHADER_READ_BIT, 
 				VK13.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
