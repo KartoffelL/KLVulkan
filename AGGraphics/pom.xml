@@ -15,6 +15,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 </properties>
 
+	<distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/KartoffelL/klvulkan</url>
+    </repository>
+  </distributionManagement>
+
 <profiles>
 	<profile><id>lwjgl-natives-windows-amd64</id><activation><os><family>windows</family><arch>amd64</arch></os></activation><properties><lwjgl.natives>natives-windows</lwjgl.natives></properties></profile>
 </profiles>
