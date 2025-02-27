@@ -74,11 +74,6 @@
 	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-msdfgen</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
 	<dependency><groupId>org.joml</groupId><artifactId>joml</artifactId><version>${joml.version}</version></dependency>
 	<dependency>
-		<groupId>Kartoffel_Licht</groupId>
-		<artifactId>klvulkan</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
-		<dependency>
    	 <groupId>io.github.spair</groupId>
    	 <artifactId>imgui-java-binding</artifactId>
    	 <version>1.89.0</version>

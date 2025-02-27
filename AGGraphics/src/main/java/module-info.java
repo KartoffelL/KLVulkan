@@ -7,5 +7,7 @@ module AGGraphics {
 	requires static imgui.binding;
 	
 	exports Kartoffel.Licht.AGGraphics;
+	exports Kartoffel.Licht.AGGraphics.Utils;
+	exports Kartoffel.Licht.AGGraphics.EXTImGui;
 	
 }
