@@ -65,21 +65,6 @@
 	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-freetype</artifactId></dependency>
 	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-harfbuzz</artifactId></dependency>
 	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-msdfgen</artifactId></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-assimp</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-ktx</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-openal</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-openxr</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-opus</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-par</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-tinyfd</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-vma</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-shaderc</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-stb</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-glfw</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-freetype</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-harfbuzz</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
-	<dependency><groupId>org.lwjgl</groupId><artifactId>lwjgl-msdfgen</artifactId><classifier>${lwjgl.natives}</classifier></dependency>
 	<dependency><groupId>org.joml</groupId><artifactId>joml</artifactId><version>${joml.version}</version></dependency>
 	<dependency>
 		<groupId>Kartoffel_Licht</groupId>
