@@ -1,5 +1,11 @@
 /target/
-/.project
-/.classpath
-/.lwjgl/
-/.settings/
+#AGGraphics
+AGGraphics/.project
+AGGraphics/.classpath
+AGGraphics/.lwjgl/
+AGGraphics/.settings/
+#KLVulkan
+KLVulkan/.project
+KLVulkan/.classpath
+KLVulkan/.lwjgl/
+KLVulkan/.settings/
