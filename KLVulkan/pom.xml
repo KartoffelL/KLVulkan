@@ -19,6 +19,12 @@
                     </goals>
                 </execution>
             </executions>
+	<configuration>
+       		<failOnError>false</failOnError>  <!--  Ignore errors -->
+       		<additionalJOptions>
+           		<additionalJOption>-Xdoclint:none</additionalJOption>  <!--  Suppress doclint errors -->
+       		</additionalJOptions>
+  	</configuration>
         </plugin>
 
         <!-- Generate Sources JAR -->
