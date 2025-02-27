@@ -1106,11 +1106,12 @@ public class ImGuiImplGlfw {
 			@Override
 			public void accept(ImGuiViewport vp) {
 				if(!drawers.containsKey(vp.getID())) return;
-				if(brefs.get(vp.getID()).indices == null) return;
-				brefs.get(vp.getID()).indices.free();
-				brefs.get(vp.getID()).vertices.free();
-				windows.get(vp.getID()).getParent().destroyWindow(windows.get(vp.getID()));
 				drawers.get(vp.getID()).free();
+				if(brefs.get(vp.getID()).indices != null) {
+					brefs.get(vp.getID()).indices.free();
+					brefs.get(vp.getID()).vertices.free();
+				}
+				windows.get(vp.getID()).getParent().destroyWindow(windows.get(vp.getID()));
 				
 				brefs.remove(vp.getID());
 				drawers.remove(vp.getID());
@@ -1132,14 +1133,14 @@ public class ImGuiImplGlfw {
 			@Override
 			public void accept(ImGuiViewport vp) {
 				if(!drawers.containsKey(vp.getID())) return;
+				AGDrawer drawer = drawers.get(vp.getID());
+				if(!drawer.ready()) //If not ready, return
+					return;
 				var bref = brefs.get(vp.getID());
 				int hash = ImGuiIntegration.hash(vp.getDrawData());
-				if(bref.hash == hash)
+				if(bref.hash == hash) //If content presumably didn't change
 					return;
 				bref.hash = hash;
-				AGDrawer drawer = drawers.get(vp.getID());
-				if(!drawer.ready())
-					return;
 				var window = windows.get(vp.getID());
 				int index = window.getCanvas().updateImageIndex(0);
 				if(index > -1) {
