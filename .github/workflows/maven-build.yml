@@ -25,7 +25,7 @@ jobs:
         run: mvn -B -f KLVulkan/pom.xml clean package -DskipTests
 
       - name: Build AGGraphics
-        run: mvn -B -f AGGraphics/pom.xml clean package -DskipTests --module-path KLVulkan/target
+        run: mvn -B -f AGGraphics/pom.xml clean package -DskipTests \ --module-path KLVulkan/target
 
       - name: Find JAR Files
         run: |
