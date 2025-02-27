@@ -46,7 +46,6 @@
 	    <artifactId>maven-compiler-plugin</artifactId>
 	    <version>3.8.1</version>
 	    <configuration>
-	        <release>23</release>  <!-- Adjust Java version if needed -->
 	        <compilerArgs>
 	            <arg>--module-path</arg>
 	            <arg>${maven.repo.local}</arg>  <!-- Ensure module path includes dependencies -->
