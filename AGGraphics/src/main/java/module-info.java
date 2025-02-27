@@ -1,10 +1,10 @@
 module AGGraphics {
-	requires org.lwjgl.vulkan;
-	requires org.joml;
-	requires org.lwjgl.glfw;
-	requires org.lwjgl.stb;
-	requires transitive KLVulkan;
-	requires imgui.binding;
+	requires org.lwjgl.vulkan; //Required
+	requires org.joml;  //Required
+	requires static org.lwjgl.glfw;
+	requires static org.lwjgl.stb;
+	requires transitive KLVulkan; //Should always be there
+	requires static imgui.binding;
 	
 	exports Kartoffel.Licht.AGGraphics;
 	
