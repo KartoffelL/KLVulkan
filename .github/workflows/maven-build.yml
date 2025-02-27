@@ -1,0 +1,41 @@
+name: Build and Append to Release
+
+on:
+  release:
+    types: [created]  # Runs when a new release is published
+
+jobs:
+  build:
+    name: Build Maven Projects
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'  # Change if needed
+          cache: 'maven'
+
+      - name: Build KLVulkan
+        run: mvn -f KLVulkan/pom.xml clean package -DskipTests
+
+      - name: Build AGGraphics
+        run: mvn -f AGGraphics/pom.xml clean package -DskipTests
+
+      - name: Find JAR Files
+        run: |
+          mkdir -p release
+          find KLVulkan/target -name "*.jar" -exec cp {} release/ \;
+          find AGGraphics/target -name "*.jar" -exec cp {} release/ \;
+
+      - name: Upload JARs to Existing Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release/*.jar
+          tag_name: ${{ github.event.release.tag_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
