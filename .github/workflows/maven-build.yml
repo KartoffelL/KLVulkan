@@ -30,8 +30,9 @@ jobs:
       - name: Find JAR Files
         run: |
           mkdir -p release
-          find KLVulkan/target -name "*.jar" -exec cp {} release/ \;
-          find AGGraphics/target -name "*.jar" -exec cp {} release/ \;
+          find KLVulkan/target -name "*.jar" -exec cp {} release/ \; || echo "No JARs found in KLVulkan"
+          find AGGraphics/target -name "*.jar" -exec cp {} release/ \; || echo "No JARs found in KLVulkan"
+          ls -lh release/
 
       - name: Upload JARs to Existing Release
         uses: softprops/action-gh-release@v1
