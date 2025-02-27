@@ -38,8 +38,15 @@ jobs:
       run: mvn -B deploy -s "${{ github.workspace }}/KLVulkan/settings.xml" --file "${{ github.workspace }}/KLVulkan/pom.xml"
       env:
         GITHUB_TOKEN: ${{ github.token }}
-
-
+        #now for AGGraphics
+    - name: Set up JDK 23 (Again?)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '23'
+        distribution: 'temurin'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }}/AGGraphics # location for the settings.xml file
+        
     - name: AGGraphics Build with Maven
       run: mvn -B package --file "${{ github.workspace }}/AGGraphics/pom.xml"
     - name: AGGraphics Test
