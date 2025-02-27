@@ -46,8 +46,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.1</version>
             <configuration>
-                <source>17</source>   <!-- Adjust to the version you're using -->
-                <target>17</target>   <!-- Adjust to the version you're using -->
+                <source>23</source>   <!-- Adjust to the version you're using -->
+                <target>23</target>   <!-- Adjust to the version you're using -->
                 <compilerArgs>
                     <arg>--module-path</arg>
                     <arg>${project.basedir}/KLVulkan/target</arg>  <!-- Set the correct path to KLVulkan's target folder -->
