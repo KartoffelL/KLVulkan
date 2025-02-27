@@ -22,10 +22,10 @@ jobs:
           cache: 'maven'
 
       - name: Build KLVulkan
-        run: mvn -f KLVulkan/pom.xml clean package -DskipTests
+        run: mvn -B -f KLVulkan/pom.xml clean install -DskipTests
 
       - name: Build AGGraphics
-        run: mvn -f AGGraphics/pom.xml clean package -DskipTests
+        run: mvn -B -f AGGraphics/pom.xml clean package -DskipTests
 
       - name: Find JAR Files
         run: |
