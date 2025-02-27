@@ -22,7 +22,7 @@ jobs:
           cache: 'maven'
 
       - name: Build KLVulkan
-        run: mvn -B -f KLVulkan/pom.xml clean install -DskipTests
+        run: mvn -B -f KLVulkan/pom.xml clean package -DskipTests
 
       - name: Build AGGraphics
         run: mvn -B -f AGGraphics/pom.xml clean package -DskipTests
@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p release
           find KLVulkan/target -name "*.jar" -exec cp {} release/ \; || echo "No JARs found in KLVulkan"
-          find AGGraphics/target -name "*.jar" -exec cp {} release/ \; || echo "No JARs found in KLVulkan"
+          find AGGraphics/target -name "*.jar" -exec cp {} release/ \ --module-path KLVulkan/target; || echo "No JARs found in KLVulkan"
           ls -lh release/
 
       - name: Upload JARs to Existing Release
