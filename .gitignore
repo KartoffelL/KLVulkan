@@ -4,8 +4,10 @@ AGGraphics/.project
 AGGraphics/.classpath
 AGGraphics/.lwjgl/
 AGGraphics/.settings/
+AGGraphics/bin/
 #KLVulkan
 KLVulkan/.project
 KLVulkan/.classpath
 KLVulkan/.lwjgl/
 KLVulkan/.settings/
+KLVulkan/bin/
