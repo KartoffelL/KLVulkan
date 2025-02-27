@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"KLVulkan","l":"Kartoffel.Licht.Vulkan"},{"m":"KLVulkan","l":"Kartoffel.Licht.Vulkan.Impls"},{"m":"KLVulkan","l":"Kartoffel.Licht.Vulkan.video"}];updateSearchResults();
