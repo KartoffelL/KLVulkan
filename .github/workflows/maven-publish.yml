@@ -26,18 +26,33 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }}/KLVulkan # location for the settings.xml file
 
-    - name: Build with Maven
+    - name: KLVulkan Build with Maven
       run: mvn -B package --file "${{ github.workspace }}/KLVulkan/pom.xml"
-    - name: Test
+    - name: KLVulkan Test
       run: ls -l "${{ github.workspace }}/KLVulkan/"
-    - name: Test2
+    - name: KLVulkan Test2
       run: ls -l "${{ github.workspace }}/"
-    - name: Teee
+    - name: KLVulkan cat
       run: cat "${{ github.workspace }}/KLVulkan/settings.xml"
-    - name: Publish to GitHub Packages Apache Maven
+    - name: KLVulkan Publish to GitHub Packages Apache Maven
       run: mvn -B deploy -s "${{ github.workspace }}/KLVulkan/settings.xml" --file "${{ github.workspace }}/KLVulkan/pom.xml"
       env:
         GITHUB_TOKEN: ${{ github.token }}
+
+
+    - name: AGGraphics Build with Maven
+      run: mvn -B package --file "${{ github.workspace }}/AGGraphics/pom.xml"
+    - name: AGGraphics Test
+      run: ls -l "${{ github.workspace }}/AGGraphics/"
+    - name: AGGraphics Test2
+      run: ls -l "${{ github.workspace }}/"
+    - name: AGGraphics cat
+      run: cat "${{ github.workspace }}/AGGraphics/settings.xml"
+    - name: AGGraphics Publish to GitHub Packages Apache Maven
+      run: mvn -B deploy -s "${{ github.workspace }}/AGGraphics/settings.xml" --file "${{ github.workspace }}/AGGraphics/pom.xml"
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        
 #     - uses: actions/checkout@v4
 #     - name: Set up Maven Central Repository
 #       uses: actions/setup-java@v4
