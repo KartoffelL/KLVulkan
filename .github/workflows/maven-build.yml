@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'  # Change if needed
+          java-version: '23'  # Change if needed
           cache: 'maven'
 
       - name: Build KLVulkan
