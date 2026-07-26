@@ -2,17 +2,21 @@
 
 Generated Vulkan abstractions for Java, backed by LWJGL.
 
-KLVulkan provides safe, object-oriented access to Vulkan core functionality from Java while remaining close to the native API.
+KLVulkan provides safe, object-oriented access to Vulkan functionality from Java while remaining close to the native API.
 
 ---
 
 ## Features
 
-* Generated Vulkan core bindings
+NOTE: the bindings are still in-development and lack testing. There **might** still be some serious bugs or performance problems.
+
+
+
+* Generated Vulkan core bindings + most extensions
 * Object-oriented API design
 * Built on top of LWJGL's Vulkan implementation
 * Support for Vulkan core versions through version-specific interfaces
-* Memory-safe usage patterns with Java's Foreign Function & Memory API
+* Uses the FFI API
 
 ---
 
@@ -24,7 +28,7 @@ KLVulkan is available on Maven Central:
 <dependency>
     <groupId>io.github.kartoffell</groupId>
     <artifactId>klvulkan</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -55,6 +59,8 @@ try (final var arena = Arena.ofConfined()) {
     // Allocate and populate the instance creation structure.
     final var pCreateInfo =
             VK10.VkInstanceCreateInfo.allocateDirect(arena);
+
+    [Initialize pCreateInfo here]
 
     // Allocate storage for the resulting VkInstance handle.
     final var pInstance = VK.instancePointer(
@@ -114,6 +120,7 @@ try (final var arena = Arena.ofConfined()) {
 ```
 
 ---
+
 
 ## License
 
