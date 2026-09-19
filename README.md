@@ -25,7 +25,7 @@ NOTE: the bindings are still in-development and lack testing. There **might** st
 Since the bindings are generated (see [the Tool](https://github.com/KartoffelL/JavaBindingsGenTool)), no sources are (still) contained in this repo.
 But you can always download them at [Maven Central](https://repo1.maven.org/maven2/io/github/kartoffell/klvulkan/0.2.0/) (Make sure you find the right version)
 
-## Installation
+## Usage
 
 KLVulkan is available on Maven Central:
 
@@ -33,15 +33,13 @@ KLVulkan is available on Maven Central:
 <dependency>
     <groupId>io.github.kartoffell</groupId>
     <artifactId>klvulkan</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
 ### Requirements
 
-KLVulkan depends on LWJGL's Vulkan bindings.
-
-If you need Vulkan extensions that are not exposed by KLVulkan, you can directly use LWJGL's Vulkan bindings alongside it.
+The bindings don't have any dependencies, and only use standard java libraries.
 
 ---
 
